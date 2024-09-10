@@ -19,7 +19,7 @@ package main
 
 import (
     "fmt"
-    "github.com/yourusername/anthropic-claude-golang-sdk"
+    "github.com/aitrailblazer/anthropic-claude-golang-sdk"
 )
 
 func main() {
