@@ -7,7 +7,7 @@ Welcome to the Golang SDK for the Anthropic Claude API. This SDK allows develope
 To install the SDK, use the following command:
 
 ```bash
-go get github.com/yourusername/anthropic-claude-golang-sdk
+go get github.com/aitrailblazer/anthropic-claude-golang-sdk
 ```
 
 ## Usage
