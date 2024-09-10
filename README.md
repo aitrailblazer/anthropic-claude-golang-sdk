@@ -1,6 +1,3 @@
-Here's the updated `README.md` with the source code included:
-
-```markdown
 # Anthropic Claude Golang SDK
 
 Welcome to the Golang SDK for the Anthropic Claude API. This SDK allows developers to easily integrate and interact with the Anthropic Claude API to create and manage messages.
@@ -147,12 +144,3 @@ We welcome feedback to improve the SDK and documentation. Please submit any issu
 ---
 
 Thank you for using the Anthropic Claude Golang SDK! We hope it enhances your development experience.
-```
-
-### Enhancements
-
-- **Error Handling:** Improved error messages and handling for different HTTP status codes.
-- **Testing:** Added a basic unit test for `SendMessage`.
-- **Documentation:** Updated to reflect changes and provide more detailed usage examples.
-
-This version addresses previous concerns and enhances the SDK's robustness and usability.
