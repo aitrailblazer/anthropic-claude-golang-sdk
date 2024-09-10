@@ -1,6 +1,6 @@
 # Anthropic Claude Golang SDK
 
-Welcome to the Golang SDK for the Anthropic Claude API. This SDK allows developers to easily integrate and interact with the Anthropic Claude API to create and manage messages.
+Welcome to the Golang SDK for the Anthropic Claude API. This SDK enables developers to integrate and interact with the Anthropic Claude API to create and manage messages.
 
 ## Installation
 
@@ -12,7 +12,7 @@ go get github.com/aitrailblazer/anthropic-claude-golang-sdk
 
 ## Usage
 
-Here's an example of how to use the SDK to send a message:
+Here's an example of how to use the SDK to send a structured message:
 
 ```go
 package main
@@ -24,8 +24,10 @@ import (
 
 func main() {
     client := anthropic.NewClient("your-api-key")
-    message := "Hello, Claude!"
-    response, err := client.SendMessage(message)
+    messages := []anthropic.Message{
+        {Role: "user", Content: "Hello, Claude!"},
+    }
+    response, err := client.SendMessage(messages, "claude-v1", 100)
     if err != nil {
         fmt.Println("Error:", err)
         return
@@ -34,9 +36,11 @@ func main() {
 }
 ```
 
-## Source Code
+## Source Code Overview
 
 ### client.go
+
+Defines the `Client` struct and `SendMessage` function:
 
 ```go
 package anthropic
@@ -61,9 +65,13 @@ func NewClient(apiKey string) *Client {
     }
 }
 
-func (c *Client) SendMessage(message string) (string, error) {
+func (c *Client) SendMessage(messages []Message, model string, maxTokens int) (string, error) {
     url := c.apiBaseURL + "/messages"
-    payload := map[string]string{"message": message}
+    payload := map[string]interface{}{
+        "model":     model,
+        "messages":  messages,
+        "max_tokens": maxTokens,
+    }
     jsonData, err := json.Marshal(payload)
     if err != nil {
         return "", fmt.Errorf("failed to marshal payload: %w", err)
@@ -93,16 +101,36 @@ func (c *Client) SendMessage(message string) (string, error) {
         return "", fmt.Errorf("failed to decode response: %w", err)
     }
 
-    response, ok := result["response"].(string)
-    if !ok {
+    responseContent, ok := result["content"].([]interface{})
+    if !ok || len(responseContent) == 0 {
         return "", errors.New("invalid response format")
     }
 
-    return response, nil
+    responseText, ok := responseContent[0].(map[string]interface{})["text"].(string)
+    if !ok {
+        return "", errors.New("invalid response text format")
+    }
+
+    return responseText, nil
+}
+```
+
+### message.go
+
+Defines the `Message` struct:
+
+```go
+package anthropic
+
+type Message struct {
+    Role    string      `json:"role"`
+    Content interface{} `json:"content"`
 }
 ```
 
 ### client_test.go
+
+Basic test for the `SendMessage` function:
 
 ```go
 package anthropic
@@ -114,27 +142,11 @@ import (
 func TestSendMessage(t *testing.T) {
     client := NewClient("test-api-key")
 
-    _, err := client.SendMessage("Test message")
+    _, err := client.SendMessage([]Message{{Role: "user", Content: "Test message"}}, "claude-v1", 100)
     if err != nil {
         t.Errorf("SendMessage failed: %v", err)
     }
 }
-```
-
-### message.go
-
-```go
-package anthropic
-
-// Define message-related structures and functions here if needed
-```
-
-### config.go
-
-```go
-package anthropic
-
-// Configuration management can be handled here if needed
 ```
 
 ## Feedback
