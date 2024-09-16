@@ -1,1 +1,0 @@
-// Default content for architecture.md

@@ -1,1 +1,0 @@
-// Default content for go.mod
